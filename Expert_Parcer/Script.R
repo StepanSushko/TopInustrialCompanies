@@ -1,6 +1,6 @@
 if (!require("XML")) { install.packages("XML"); require("XML") }
 if (!require("ggplot2")) { install.packages("ggplot2"); require("ggplot2") }
-#if (!require("RCurl")) { install.packages("RCurl"); require("RCurl") }
+if (!require("RCurl")) { install.packages("RCurl"); require("RCurl") }
 if (!require("qdap")) { install.packages("qdap"); require("qdap") }
 
 #if (!require("gridExtra")) { install.packages("gridExtra"); require("gridExtra") }
@@ -9,13 +9,14 @@ if (!require("qdap")) { install.packages("qdap"); require("qdap") }
 
 #if (!require("mclust")) { install.packages("mclust"); require("mclust") }
 
+plotDir = "C:/Users/stepa/OneDrive/DataScience/Expert_Parcer/Expert_Parcer/Plots"
 
 # Parsing -----
 
 # u = "http://en.wikipedia.org/wiki/World_population"
 u = "http://expert.ru/ratings/300-krupnejshih-proizvodstvennyih-kompanij-yuga-rossii-po-itogam-2016-goda/"
 
-
+u <- getURL(u)
 
 doc = htmlParse(u, encoding = "UTF8", asText = T)
 tableNodes = getNodeSet(doc, "//table")
@@ -103,10 +104,13 @@ Region = "Волгоградская   область"
 Region = "Краснодарский   край"
 
 Показатель = (tb[tb$`Регион` == Region,])$`Выручка в 2016   году, млн руб.`
-Показатель = (tb[tb$`Регион` == Region,])$`Чистая прибыль в   2016 году, млн руб.`
+#Показатель = (tb[tb$`Регион` == Region,])$`Чистая прибыль в   2016 году, млн руб.`
 
 df = aggregate(Показатель ~ `Отрасль`, tb[tb$`Регион` == Region,], sum)
 df = df[order(df$Показатель, decreasing = T),]
+
+
+png(filename = file.path(plotDir, "Region_vs_revenue_KK.png"), width = 600, height = 400, units = "px", pointsize = 24, bg = "white", res = 100, family = "", restoreConsole = TRUE) #, type = c("cairo-png"))
 
 ggplot(df) +
     geom_bar(aes(x = 1:dim(df)[1], y = Показатель), stat = "identity") + xlab("") +
@@ -116,10 +120,12 @@ ggplot(df) +
                       breaks = 1:dim(df)[1],
                       labels = df$`Отрасль`) +
                       coord_flip() +
-                      scale_y_continuous(breaks = seq(500000, 3000000, 500000),
-    labels = as.character(seq(500000, 3000000, 500000))) + title(Region)
+    #scale_y_continuous(
+    #    breaks = seq(500000, 3000000, 500000),
+    #    labels = as.character(seq(500000, 3000000, 500000))) +
+    ggtitle(Region) + ylab("Выручка в 2016   году, млн руб.")
 
-
+dev.off()
 
 
 # Частота
