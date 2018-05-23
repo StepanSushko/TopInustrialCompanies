@@ -76,8 +76,8 @@ ggplot(df) +
                       breaks = 1:dim(df)[1],
                       labels = df$`Отрасль`) +
                       coord_flip() +
-                      scale_y_continuous(breaks = seq(500000, 3000000, 500000),
-    labels = as.character(seq(500000, 3000000, 500000)))
+                      scale_y_continuous(breaks = seq(0, 3000000, 100000),
+    labels = as.character( as.character(seq(00, 3000000, 100000))))
 
 
 # Регионы
@@ -89,12 +89,17 @@ ggplot(df) +
 df = aggregate(Показатель ~ `Регион`, tb, sum)
 df = df[order(df$Показатель, decreasing = T),]
 
+
+png(filename = file.path(plotDir, "Regions_ranking.png"), width = 600, height = 400, units = "px", pointsize = 24, bg = "white", res = 100, family = "", restoreConsole = TRUE) #, type = c("cairo-png"))
+
 ggplot(df) +
     geom_bar(aes(x = 1:dim(df)[1], y = Показатель), stat = "identity") + xlab("") +
     theme(axis.text.x = element_text(angle = 270, vjust = 0.25, hjust = 0)) +
     scale_x_continuous(#name = "",
                       breaks = 1:dim(df)[1],
-                      labels = df$`Регион`)
+    labels = df$`Регион`) + ggtitle("Совокупная Выручка в 2016 году, млн руб.") + ylab("") + annotate(geom = "text", x = 7, y = 250000, xend = Inf, yend = Inf, label = 'Степан Сушко', color = 'white', angle = 45, fontface = 'bold', size = 6, alpha = 0.5, family = 'Verdana')
+
+dev.off()
 
 
 # Структура по региону
@@ -110,7 +115,7 @@ df = aggregate(Показатель ~ `Отрасль`, tb[tb$`Регион` == Region,], sum)
 df = df[order(df$Показатель, decreasing = T),]
 
 
-png(filename = file.path(plotDir, "Region_vs_revenue_KK.png"), width = 600, height = 400, units = "px", pointsize = 24, bg = "white", res = 100, family = "", restoreConsole = TRUE) #, type = c("cairo-png"))
+png(filename = file.path(plotDir, "Region_vs_revenue_VO.png"), width = 600, height = 400, units = "px", pointsize = 24, bg = "white", res = 100, family = "", restoreConsole = TRUE) #, type = c("cairo-png"))
 
 ggplot(df) +
     geom_bar(aes(x = 1:dim(df)[1], y = Показатель), stat = "identity") + xlab("") +
@@ -120,10 +125,11 @@ ggplot(df) +
                       breaks = 1:dim(df)[1],
                       labels = df$`Отрасль`) +
                       coord_flip() +
-    #scale_y_continuous(
-    #    breaks = seq(500000, 3000000, 500000),
-    #    labels = as.character(seq(500000, 3000000, 500000))) +
-    ggtitle(Region) + ylab("Выручка в 2016   году, млн руб.")
+                      #scale_y_continuous(
+                      #    breaks = seq(500000, 3000000, 500000),
+                      #    labels = as.character(seq(500000, 3000000, 500000))) +
+    ggtitle(Region) + ylab("Выручка в 2016   году, млн руб.") +
+    annotate(geom = "text", x = 4, y = 55000, xend = Inf, yend = Inf, label = 'Степан Сушко', color = 'white', angle = 45, fontface = 'bold', size = 6, alpha = 0.5, family = 'Verdana')
 
 dev.off()
 
